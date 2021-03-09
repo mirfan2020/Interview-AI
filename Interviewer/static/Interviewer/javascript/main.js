@@ -69,7 +69,7 @@ function toggleRecording( e ) {
         audioRecorder.clear();
         audioRecorder.record();
     }
-    document.getElementById('capture_baseline').click();
+    //document.getElementById('capture_baseline').click();
 }
 
 function convertToMono( input ) {

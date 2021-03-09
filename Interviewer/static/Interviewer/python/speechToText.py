@@ -4,8 +4,11 @@ from nltk.tokenize import word_tokenize
 import re
 import matplotlib.pyplot as plt
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
-import watson_developer_cloud.natural_language_understanding.features.v1 as \
-    features
+from deepface import DeepFace
+
+#import watson_developer_cloud.natural_language_understanding.features.v1 as \
+ #   features
+from watson_developer_cloud.natural_language_understanding_v1 import Features, KeywordsOptions, EntitiesOptions, CategoriesOptions, EmotionOptions, SentimentOptions
 from wordcloud import WordCloud
 import subprocess
 ##removes non non-alphanumeric characters based on re
@@ -44,20 +47,23 @@ def create_pic(input_text):
 		y_list.append(item[1])
 	x=range(len(x_list[:5]))
 	plt.bar(x, y_list[:5],width=0.9)
+	print(x,x_list)
 	plt.xticks((x),x_list)
 	plt.savefig('Interviewer/static/Interviewer/userMedia/freq.png')
 	plt.close()
 
 def create_emo(input_text):
 	natural_language_understanding = NaturalLanguageUnderstandingV1(
-		version='2017-02-27',
-		username='6a28fa30-2bd7-4981-9037-09e3e8a3a691',
-		password='ZtUrPvaSmxKL')
+		version='2018-08-01',
+		url='https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/1e8592f9-5126-42de-aac1-9b9216bac37d',
+		iam_apikey="a9dSvu44DdCEYQJmi2Msv5YdAb9jBvovuauLdigl7oP6")
+
+	#print("features",features.Emotion())
 
 	response = natural_language_understanding.analyze(
 		text=input_text,
-		features=[features.Emotion()])
-	result=json.loads(json.dumps(response, indent=2))
+		features=Features(  emotion=EmotionOptions(),))
+	result=json.loads(json.dumps(response.result, indent=2))
 	print(result)
 	emo_rate=result["emotion"]["document"]["emotion"]
 	labels = ['sadness', 'joy', 'fear', 'disgust','anger']
@@ -90,55 +96,25 @@ def create_speed(avg_velocity):
 	plt.close()
 
 def pic_anly():
-    p = subprocess.Popen('curl -X POST "https://v1-api.visioncloudapi.com/face/detection?api_id=5a0f0ffc899a4db88241a0e7bd4ed306&api_secret=f66a525a98e54c3e97bb1d6ee9d6d4c7&attributes=true" \
-      -F file=@user_photo.png', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, error = p.communicate()
-    result=json.loads(out.decode("utf-8"))
-    desc = ''
-    if(len(result['faces'])==1):
-        att=result['faces'][0]['attributes']
-        emo=result['faces'][0]['emotions']
-        desc+="Description for the appearance" + ' : '
-        desc+="Age: "+str(att['age'])+' - '
-        d_smile='No'
-        if(att['smile']==1):
-            d_smile='yes'
-        desc+="Smile: "+d_smile+' - '
-        gender = att['gender']
-        d_gender=''
-        if(gender>50):
-            d_gender='Male'
-        else:
-            d_gender='Female'
-        desc+="Gender: " + d_gender + ' - '
-
-        glass = att['eyeglass']
-        d_glass = ''
-
-        if(glass>50):
-            d_glass="with glass"
-        else:
-            d_glass="without glass"
-        desc+="Eyeglass: " + d_glass + ' '
-        desc+="Emotions:"
-        d_emo=''
-        emo_list = ["angry","calm","confused","disgust","happy","sad","scared","surprised","screaming"]
-        for sub_emo in emo_list:
-            if(emo[sub_emo]==1):
-                d_emo+=sub_emo
-        desc+=d_emo+'\n'
-    else:
-        desc="Invalid picture - mutiple faces detected or nofaces detected"
-    return (desc)
+	result = DeepFace.analyze(img_path = "user_photo.png", actions = ['age', 'gender', 'race', 'emotion'],)
+	desc=''    
+	if(result):
+		desc+="Description for the appearance" + ' : '
+		desc+="%s year old %s %s. Emotion:%s"%(result["age"],result["dominant_race"],result["gender"],result["dominant_emotion"])
+	else:
+		desc="Invalid picture - mutiple faces detected or nofaces detected"
+		del(result)
+	return (desc)
 
 def speech_to_text(b64code):
 
-	stt = SpeechToTextV1(username="5ff4851b-de60-45c5-9fdb-e0d7d9b866c2", password="3siYdkUyzVoj")
+	stt = SpeechToTextV1(url='https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/6739751e-9690-493a-84c0-418c1ff62131',
+		iam_apikey="tVbCB-1P7r0VMe233CpPeZCInWz1MiHFXXTH1Z5cw8z7")
 
 	audio_file = base64.b64decode(b64code)
 
-	result = json.dumps(stt.recognize(audio_file, content_type="audio/wav",continuous="true",timestamps="true",word_confidence="True",model="en-UK_NarrowbandModel"), indent=2)
-
+	result = json.dumps(stt.recognize(audio_file, content_type="audio/wav",continuous="true",timestamps="true",word_confidence="True",model="en-UK_NarrowbandModel").result, indent=2)
+	print(result)
 	# print result
 	wjdata = json.loads(result)
 
@@ -162,6 +138,7 @@ def speech_to_text(b64code):
 
 	print(average_velocity)
 	create_pic(temp_str)
+	print("temp_str:",temp_str)
 	create_emo(temp_str)
 	word_could(temp_str)
 	create_speed(average_velocity);

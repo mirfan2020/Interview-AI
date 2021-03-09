@@ -1,0 +1,19 @@
+{
+  "apikey": "tVbCB-1P7r0VMe233CpPeZCInWz1MiHFXXTH1Z5cw8z7",
+  "iam_apikey_description": "Auto-generated for key 02e51281-3629-4724-acb1-452bcaae2da4",
+  "iam_apikey_name": "Auto-generated service credentials",
+  "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/c49b6e5480a540629da837ac9f406910::serviceid:ServiceId-4549e29f-330f-41b4-9563-ca318e4988e9",
+  "url": "https://api.eu-gb.speech-to-text.watson.cloud.ibm.com/instances/6739751e-9690-493a-84c0-418c1ff62131"
+}
+
+{
+  "apikey": "a9dSvu44DdCEYQJmi2Msv5YdAb9jBvovuauLdigl7oP6",
+  "iam_apikey_description": "Auto-generated for key 0289b198-eb2c-43a7-80f6-739a1cdcbcd0",
+  "iam_apikey_name": "Auto-generated service credentials",
+  "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
+  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/c49b6e5480a540629da837ac9f406910::serviceid:ServiceId-1bb4d760-893d-44b0-b756-bed361a03bb6",
+  "url": "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/1e8592f9-5126-42de-aac1-9b9216bac37d"
+}
+
+curl -X POST "https://v1-api.visioncloudapi.com/face/detection?api_id=5a0f0ffc899a4db88241a0e7bd4ed306&api_secret=f66a525a98e54c3e97bb1d6ee9d6d4c7&attributes=true" -F file="@user_photo.png"

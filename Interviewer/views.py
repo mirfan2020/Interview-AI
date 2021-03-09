@@ -1,7 +1,7 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render
 import base64
-
+from PIL import Image
 from Interviewer.static.Interviewer.python import speechToText
 
 def index(request):
@@ -11,10 +11,16 @@ def recorder(request):
     return render(request, 'Interviewer/recorder.html')
 
 def recorderWorker(request):
-    return render(request, 'Interviewer/recorderWorker.js')
+    return render(request, 'Interviewer/recorderWorker.js',content_type='text/javascript')
 
 def webcamWorker(request):
-    return render(request, 'Interviewer/webcamWorker.js')
+    return render(request, 'Interviewer/webcamWorker.js',content_type='text/javascript')
+
+def hi(request):
+    return render(request,'Interviewer/hi.html')
+
+def webcam(request):
+    return render(request,'Interviewer/webcam.min.js',content_type='text/javascript')
 
 def analyzeSpeech(request):
     try:
@@ -24,11 +30,12 @@ def analyzeSpeech(request):
         raise Http404
 
     dataFromSpeech = speechToText.speech_to_text(user_speech_b64code)
-
+    print("hi")
+    #print(base64.b64decode(user_photo_url))
+    #raise Http404
     average_velocity = dataFromSpeech['average_velocity']
     speech_speed = dataFromSpeech['speech_speed']
     print(average_velocity)
-
     #webcam snapshot data
     user_photo_url = user_photo_url[user_photo_url.find(",")+1:]
     imgdata = base64.b64decode(user_photo_url)
@@ -39,6 +46,7 @@ def analyzeSpeech(request):
     filename = 'Interviewer/static/Interviewer/userMedia/user_photo.png'
     with open(filename, 'wb') as f:
         f.write(imgdata)
+    
     appearance_str = speechToText.pic_anly()
 
     context = {

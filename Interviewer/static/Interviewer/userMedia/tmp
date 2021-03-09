@@ -1,0 +1,29 @@
+		'''desc+="Age: "+str(result["age"])+' - '
+		d_smile='No'
+		'''if(att['smile']==1):
+			d_smile='yes'
+		desc+="Smile: "+d_smile+' - '''
+		gender = result['gender']
+		'''d_gender=''
+		if(gender>50):
+			d_gender='Male'
+		else:
+			d_gender='Female'''
+		desc+=''
+		desc+="Gender: " + gender + ' - '
+
+		'''glass = att['eyeglass']
+		d_glass = ''
+
+		if(glass>50):
+			d_glass="with glass"
+		else:
+			d_glass="without glass"
+		desc+="Eyeglass: " + d_glass + ' '
+		desc+="Emotions:"
+		d_emo=''
+		emo_list = ["angry","calm","confused","disgust","happy","sad","scared","surprised","screaming"]
+		for sub_emo in emo_list:
+			if(emo[sub_emo]==1):
+				d_emo+=sub_emo'''
+		desc+=result["dominant_emotion"]+'\n'
